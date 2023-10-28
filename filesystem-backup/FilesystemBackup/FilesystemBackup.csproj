@@ -36,6 +36,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Reference Include="SimpleSerializer">
+      <HintPath>..\..\..\SimpleSerializer\SimpleSerializer\bin\Release\net8.0\publish\SimpleSerializer.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="Resources\appicon.jpg">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>

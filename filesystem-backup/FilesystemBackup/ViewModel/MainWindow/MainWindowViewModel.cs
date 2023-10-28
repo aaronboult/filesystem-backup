@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using FilesystemBackup.Model;
@@ -149,11 +150,11 @@ public class MainWindowViewModel : ObservableObject
         await ProgressDialogService.Show(new ProgressDialogSettings
         {
             Title = "Saving scan",
-            WorkerAsync = async (dialog) =>
+            Worker = (dialog) =>
             {
-                byte[] scanData = DirectoryScanService.SerializeScan(ScannedDirectory, dialog);
+                using FileStream fileStream = File.Create(path);
 
-                await File.WriteAllBytesAsync(path, scanData);
+                DirectoryScanService.SerializeScan(fileStream, ScannedDirectory, dialog);
             },
             Finalizer = () => Messenger.Send(new RebuildDirectoryTreeMessage()),
         });
@@ -172,14 +173,7 @@ public class MainWindowViewModel : ObservableObject
         });
 
 
-        if (path == null)
-            return;
-
-
-        byte[]? bytes = FileLoadService.ReadAllFileBytes(path);
-
-
-        if (bytes == null)
+        if (path == null || !File.Exists(path))
             return;
 
 
@@ -188,7 +182,16 @@ public class MainWindowViewModel : ObservableObject
             Title = "Opening scan",
             Worker = (dialog) =>
             {
-                ScannedDirectory = DirectoryScanService.DeserializeScan(bytes, dialog);
+                using FileStream fileStream = File.OpenRead(path);
+                using MemoryStream memoryStream = new();
+
+                byte[] buffer = new byte[fileStream.Length];
+                fileStream.Read(buffer, 0, buffer.Length);
+
+                memoryStream.Write(buffer, 0, buffer.Length);
+                memoryStream.Position = 0;
+
+                ScannedDirectory = DirectoryScanService.DeserializeScan(memoryStream, dialog);
             },
             Finalizer = () => Messenger.Send(new RebuildDirectoryTreeMessage()),
         });

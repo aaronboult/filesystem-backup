@@ -1,5 +1,4 @@
 ﻿using CommunityToolkit.Mvvm.Messaging;
-using FilesystemBackup.Service.Compression;
 using FilesystemBackup.Service.Dialog;
 using FilesystemBackup.Service.DirectoryScan;
 using FilesystemBackup.Service.IO;
@@ -20,6 +19,5 @@ public static class Bootstrapper
         services.AddTransient<IProgressDialogService, ProgressDialogService>();
         services.AddTransient<IIOService, IOService>();
         services.AddTransient<IDirectoryScanService, DirectoryScanService>();
-        services.AddTransient<ICompressionService, CompressionService>();
     }
 }
