@@ -1,19 +1,46 @@
-﻿namespace FilesystemBackup.Model;
+﻿using SimpleSerializer;
+using SimpleSerializer.Object;
+using System.IO;
 
-public readonly struct ScannedFile
+namespace FilesystemBackup.Model;
+
+public class ScannedFile : SerializableFile
 {
-    public readonly string Path { get; }
-    public readonly string Name => System.IO.Path.GetFileName(Path);
+    public bool IncludeContents { get; set; } = false;
 
 
-    public ScannedFile(string path)
+    public ScannedFile() : base()
     {
-        Path = path;
+    }
+
+    public ScannedFile(Stream stream) : base(stream)
+    {
+    }
+
+    public ScannedFile(string path) : base(path)
+    {
     }
 
 
-    public byte[] Serialize()
+    public override void Serialize(Serializer serializer)
     {
-        return System.Text.Encoding.UTF8.GetBytes(Path);
+        serializer.Add(IncludeContents);
+
+        if (IncludeContents)
+            base.Serialize(serializer);
+
+        else
+            serializer.Add(Path);
+    }
+
+    public override void Deserialize(Deserializer deserializer)
+    {
+        IncludeContents = deserializer.ReadBool();
+
+        if (IncludeContents)
+            base.Deserialize(deserializer);
+
+        else
+            Path = deserializer.ReadString();
     }
 }
