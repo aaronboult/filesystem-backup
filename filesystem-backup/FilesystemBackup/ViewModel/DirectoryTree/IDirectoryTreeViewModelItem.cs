@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 
 namespace FilesystemBackup.ViewModel.DirectoryTree;
 
@@ -11,10 +12,14 @@ public enum DirectoryTreeViewModelItemType
 
 public interface IDirectoryTreeViewModelItem
 {
-    ObservableCollection<IDirectoryTreeViewModelItem> Items { get; }
     string Name { get; }
     DirectoryTreeViewModelItemType Type { get; }
-    public string ImageSource => string.Empty;
+    ObservableCollection<IDirectoryTreeViewModelItem> Items { get; }
+
+    event Action? OnIncludeContentsChangedEvent;
+
+    bool? IncludeContents { get; set; }
+
 
     void AddItem(IDirectoryTreeViewModelItem item);
     void ClearItems();

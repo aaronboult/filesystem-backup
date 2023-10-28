@@ -53,11 +53,14 @@ public class DirectoryTreeViewModel : ObservableObject, IDirectoryTreeViewModel
             progressDialog?.ReportProgress(progress += 100 / itemTotal);
         }
 
-        foreach (ScannedFile file in directory.Files)
+        for (int i = 0; i < directory.Files.Length; i++)
         {
+            ScannedFile file = directory.Files[i];
+
             item.AddItem(new DirectoryTreeViewModelItem(
                 file.Name,
-                DirectoryTreeViewModelItemType.File
+                DirectoryTreeViewModelItemType.File,
+                ref file
             ));
 
 
