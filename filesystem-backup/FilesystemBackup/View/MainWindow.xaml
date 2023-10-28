@@ -67,7 +67,7 @@
                 <Button Command="{Binding RestoreScanCommand}" IsEnabled="{Binding CanRestoreScan}" Style="{StaticResource ControlButton}">Restore Scan</Button>
             </StackPanel>
 
-            <ContentPresenter Grid.Column="1" Content="{Binding DirectoryTreeViewModel}" />
+            <ContentPresenter Margin="10" Grid.Column="1" Content="{Binding DirectoryTreeViewModel}" />
 
         </Grid>
     </Grid>
